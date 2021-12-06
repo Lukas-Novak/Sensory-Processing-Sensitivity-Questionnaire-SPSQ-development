@@ -1,0 +1,22 @@
+"";"label";"levels";"unit";"value";"p";"25%";"75%"
+"1";"Gender";"Male";"Mean (sd)";"4.9 (1.6)";"<0.001";4,38;5,69
+"2";"";"Female";"Mean (sd)";"5.5 (1.6)";"";5;6,44
+"3";"family_status";"No relationship";"Mean (sd)";"5.2 (1.6)";"0.878";4,69;6,19
+"4";"";"In relationship";"Mean (sd)";"5.2 (1.6)";"";4,62;6,06
+"5";"religious_attendance";"Once a week or more";"Mean (sd)";"5.7 (1.4)";"0.006";5;6,33
+"6";"";"Less than once a week";"Mean (sd)";"5.2 (1.6)";"";4,69;6,06
+"7";"economical_status";"Employed";"Mean (sd)";"5.1 (1.6)";"0.003";4,56;6,25
+"8";"";"Entrepreneur";"Mean (sd)";"5.4 (1.4)";"";4,31;6,06
+"9";"";"In household/without work";"Mean (sd)";"5.4 (1.7)";"";4,81;6
+"10";"";"Pensioner";"Mean (sd)";"5.2 (1.6)";"";5;6,27
+"11";"";"Maternity leave";"Mean (sd)";"5.4 (1.8)";"";4,66;6,19
+"12";"";"Student";"Mean (sd)";"5.6 (1.4)";"";4,56;6
+"13";"education";"Elementary school";"Mean (sd)";"5.2 (1.8)";"<0.001";4,91;6,14
+"14";"";"Vocational school or non - maturity high school";"Mean (sd)";"5.0 (1.7)";"";4,81;6,31
+"15";"";"High school";"Mean (sd)";"5.3 (1.4)";"";4,62;6,06
+"16";"";"Higher vocational school or University bachelor";"Mean (sd)";"5.6 (1.2)";"";4,97;6,38
+"17";"";"College";"Mean (sd)";"5.4 (1.4)";"";4,75;6,44
+"18";"faith";"Non-religious";"Mean (sd)";"5.1 (1.6)";"<0.001";4,55;6,12
+"19";"";"Yes, but I am not a member of church/rel.society";"Mean (sd)";"5.7 (1.6)";"";4,88;6,69
+"20";"";"No, I am convinced atheist";"Mean (sd)";"5.3 (1.5)";"";4,62;6,25
+"21";"";"Yes, I am a member or church/rel.society";"Mean (sd)";"5.9 (1.5)";"";4,94;6,88

@@ -1,0 +1,1651 @@
+---
+title             : "The title"
+shorttitle        : "Title"
+
+author: 
+  - name          : "First Author"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Postal address"
+    email         : "my@email.com"
+    role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
+      - Conceptualization
+      - Writing - Original Draft Preparation
+      - Writing - Review & Editing
+  - name          : "Ernst-August Doelle"
+    affiliation   : "1,2"
+    role:
+      - Writing - Review & Editing
+
+affiliation:
+  - id            : "1"
+    institution   : "Wilhelm-Wundt-University"
+  - id            : "2"
+    institution   : "Konstanz Business School"
+
+authornote: |
+  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+
+  Enter author note here.
+
+abstract: |
+  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
+  
+  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
+  
+  One sentence clearly stating the **general problem** being addressed by  this particular study.
+  
+  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
+  
+  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
+  
+  One or two sentences to put the results into a more **general context**.
+  
+  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
+  
+  <!-- https://tinyurl.com/ybremelq -->
+  
+keywords          : "keywords"
+wordcount         : "X"
+
+bibliography      : ["r-references.bib", "packages.bib"] 
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+documentclass     : "apa6"
+classoption       : "man"
+output            : papaja::apa6_word
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+	message = FALSE,
+	warning = FALSE,
+	include = FALSE
+)
+# pozor! je třeba být opatrný na bibliografii!!! a ne ji pouze slepě převzít z default settingu
+# zatím to podle dosavadních zjištění vypadá tak, že je třeba bibliografii vždy vytvořit novou
+# aby nedošlo k tomu, že se na konci dokumentu v referencích objeví i zdroje(např citované balíčky)
+# které nebyly vůbec v markdownu použity !!!!
+
+
+
+# to make analysis reproducible----------------------  
+#library(checkpoint)
+#dir.create(file.path(tempdir(), ".checkpoint"), recursive = TRUE, showWarnings = FALSE)
+#checkpoint("2020-06-23", checkpointLocation = tempdir(), scanForPackages = T, use.knitr = T, auto.install.knitr = T)
+#-----------------------------------------------------
+# library(papaja)
+# library(foreign)
+# library(dplyr)
+# library(knitr)
+# library(psych)
+# library(MVN)
+# library(MBESS)
+# library(MissMech) 
+# library(Routliers)
+# library(mice)  
+# library(userfriendlyscience)
+# library(citr)
+# library(lavaan)
+
+# load packages and set seed
+x=c("psych","dplyr","lavaan","car","papaja","userfriendlyscience","base","foreign","citr","Routliers","MVN","parameters", "EFA.MRFA","RGenData","semPlot","psycho","apa","corx","effectsize","qwraps2","finalfit","ggstatsplot","dunn.test","insight","rstatix") 
+set.seed(626461321)
+lapply(x, require, character.only = TRUE)
+
+```
+
+```{r Create biblio from packags, include=FALSE}
+knitr::write_bib(c(x), width = 60, file = 'packages.bib')
+```
+
+
+```{r setup and data load, include = FALSE}
+# loading the datasets
+# dataset 1: 
+data.1 <- foreign::read.spss(file = "CP_1.dat.sav", to.data.frame = T)
+
+# re-code errously labeled variable 
+data.1$religious_attendance=factor(data.1$religious_attendance,
+                                   labels = c("Never", "Occasionaly","Often, but not every week",
+                                    "I try to attend once a week","More than once a week"))
+
+#..............................................
+# dataset 2: 
+data.2 <- foreign::read.spss(file = "CP_2.dat.sav", to.data.frame = T)
+# adding TEQ name to already chosen list of variables names  
+
+
+data.2$cov_sus=factor(data.2$cov_sus) # this delete levels that do not occur 
+# creating new empty variables: to allow combine datasets by rows - columns names respectively 
+data.2$education=NA
+data.2$economical_status=NA
+data.2$family_status=NA
+data.2$faith=NA
+data.2$religious_attendance=factor(data.2$religious_attendance,
+                                   labels = c("Never", "Occasionaly","Often, but not every week",
+                                    "I try to attend once a week","More than once a week"))
+
+# combine datasets
+# data.work=rbind.data.frame(data.1[dput(names)], data.2[dput(names)])
+data.work= bind_rows(data.1,data.2)
+
+nrow(data.work)
+```
+
+# Introduction 
+
+# Methods
+## Study sample 
+
+## Measures
+
+### Highly Sensitive Person Scale (HSPS)
+  .............. Mean is used for scoring of participants responses [@gearhartHighlySensitivePerson2017].     
+
+## Statistical analysis
+Normality of the distribution was assessed by histograms and Mardia's test of skewness  and kurtosis. Homoscedasticity was examined by visual inspection of the residual plot. Presence of outliers was measured by Median Absolute Deviation (MAD) - for further details see Supplementary material 1.      
+To find out, what items should be remained in the scale, the EFA was conduced. The EFA was calculated based on the polychoric correlation matrix with oblimin rotation. The weighted least squares (WLS) estimator was used. Assumption of the EFA were explored by the Bartlett test of sphericity and Kaiser Meyer Olkin (KMO). Values of the KMO > 0.7 can be considerate adequate [@meyers_applied_2013]. In the EFA items were excluded if: 1) were not loading to any factor; 2) loading was not theoretically meaningful; 3) communalities (h2) ≤ 0.4; 4) cross-loading was ≥ 0.30 and 5) factor loading was ≤ 0.4. Presence of an individual factor was considered if: 1) factor has theoretical justification; 2) was formed from ≥ 3 items; 3) alpha reliability was ≥ 0.7 [@forbush_development_2013-1; @howard_review_2016-1; @watkins_exploratory_2018-1]. The EFA was performed in the *psych*  package [@R-psych] in R. A Number of factors to extract was determined by three methods: 1) Parallel analysis [@Horn1965]; 2) Hull method [@lorenzo-seva_hull_2011-1] and 3) Comparison data method (CD) [@ruscio_determining_2012-1]. 
+
+<!-- The combination of the Parallel analysis, CD and Hull method, was chosen because we have relatively large number of participants and the two-dimensional structure with correlated factors is assumed; this is in line with the recommendation of the study  -->
+  In the next step, the results of the EFA were evaluated by Confirmatory Factor Analysis (CFA) run on polychoric correlation matrix. In the CFA the model fit was explored by 1) Tucker-Lewis index (TLI); 2) comparative fit index (CFI). Absolute model fit was measured by 3) Root Mean Square Error of Approximation (RMSEA) and 4) Standardized Root Mean Square Residual (SRMR). Finally Chi-Square (χ2) statistic to evaluate model fit was also calculated. In TLI and CFI values > 0.95 indicates a acceptable fit [@jackson_reporting_2009] while values > 0.97 indicates a good fit [@schermelleh-engel_evaluating_2003]. Values of SRMR < 0.08 reflects acceptable fit and < 0.05 a good fit [@hooper_structural_2008].The RMSEA value can be considered as acceptable if < 0.08 [@hoeIssuesProceduresAdopting2008; @civelek2018essentials; @vandenbergReviewSynthesisMeasurement2000]. Acceptable fit of the solution can be further supported, when upper bound of 90% CI of RMSEA is < 0.08 [@brownConfirmatoryFactorAnalysis2015]. As the fitting algorithm the Diagonally Weighted Least Squares estimator (DWLS). Bi-factor, two correlated factors and one factor solution were tested. The CFA will be calculated using lavaan [@R-lavaan] package in R.  
+  Internal consistency of the scale was evaluated by 1) Cronbach's alpha; 2) McDonald's omega [@mcdonald_test_1999-1] and item-total correlations. All internal consistency measures were calculated in R packages *psych* [@R-psych] and *usf* [@R-userfriendlyscience]. To assess the replicability of factor structure of our scale we calculated replicability index (H-index) [@hammer_construct_2016]. Values of H-index > 0.80 indicates that latent variable is adequately defined and and replicable [@rodriguez_applying_2016-1]. The group difference were calculated using analysis of covariance (ANCOVA). The dependent variable will be a sensitivity score. Independent variable will be gender with two levels (males, females). The covariances will be a trait neuroticism, age and education. Binary logistic regression will be calculated to assess the relationship between experiences of coronavirus pandemic and hypersensitivity. Covariates will be gender, age and education. Relationships between other constructs of interests will be explored by correlations. Depending on the character of the data, either Pearson correlation or Spearman's Rank will be calculated. All calculations will be carried out in base *R* [@R-base].
+
+# Results
+## Outliers and normality testing and assumptions of EFA 
+```{r Detecting outliers - MAD}
+#First analysis
+# firstly it is important to calculate row mean
+data.work$SHSS_row_m<-rowMeans(data.work[ ,c("SHSS_1_S","SHSS_2_S", "SHSS_3_S", "SHSS_4_S","SHSS_5_S","SHSS_6_S","SHSS_7_S", "SHSS_8_S","SHSS_9_S","SHSS_10_S", "SHSS_1_E","SHSS_2_E","SHSS_3_E","SHSS_4_E","SHSS_5_E","SHSS_6_E","SHSS_7_E", "SHSS_8_E","SHSS_9_E","SHSS_10_E")], na.rm = T) 
+# calculating MAD
+out_MAD=outliers_mad(data.work$SHSS_row_m, b = 1.4826,threshold = 2.5, na.rm = T)
+# apply MAD function 
+plot_outliers_mad(out_MAD, data.work$SHSS_row_m, pos_display = FALSE) # plot outlying values 
+# description of outlying values
+out_MAD 
+# creating dataset only with outliers for screening purposes
+outliers=data.work[c(out_MAD[["outliers_pos"]]), ]
+# We assessed whether participants were not responding in the same way to the several measures. For instance if participant responded to all of SHSS items with "0" and to all items of HSPS with answer "1", we deleted such record from our dataset.     
+
+# based on the uniform pattern of responding, the following records were excluded fro the analysis: 
+# data set without outliers
+data.work=data.work[-c(35,56,128,155,275,339,800,1059,1082,1184,1189,1198,1220,1318,1331,1415,1421,1533,1567,1574,1151,470,1295,858,1429,1107,102), ]
+nrow(data.work)
+# after outliers were excluded 1919 records remained
+```
+
+```{r Normality testing}
+
+# MULTIVARIATE NORMALITY:
+
+# visual inspection of histograms for Sensitivity items:
+mvn(data = data.work[, c("SHSS_1_S","SHSS_2_S", "SHSS_3_S","SHSS_4_S","SHSS_5_S")],mvnTest = "mardia", univariatePlot = "histogram")
+mvn(data = data.work[, c("SHSS_6_S","SHSS_7_S", "SHSS_8_S","SHSS_9_S","SHSS_10_S")],mvnTest = "mardia", univariatePlot = "histogram")
+mvn(data = data.work[, c("SHSS_1_E","SHSS_2_E", "SHSS_3_E","SHSS_4_E","SHSS_5_E")],mvnTest = "mardia", univariatePlot = "histogram")
+mvn(data = data.work[, c("SHSS_6_E","SHSS_7_E", "SHSS_8_E","SHSS_9_E","SHSS_10_E")],mvnTest = "mardia", univariatePlot = "histogram")
+
+# inspection indicated skewness problems with items: 
+mvn(data = data.work[, c("SHSS_1_S","SHSS_2_S", "SHSS_3_S", "SHSS_4_S","SHSS_5_S","SHSS_6_S","SHSS_7_S", "SHSS_8_S","SHSS_9_S","SHSS_10_S", "SHSS_1_E","SHSS_2_E","SHSS_3_E","SHSS_4_E","SHSS_5_E","SHSS_6_E","SHSS_7_E", "SHSS_8_E","SHSS_9_E","SHSS_10_E")],mvnTest = "mardia")    
+# resuts:           coefficients    p-value
+#Mardia Skewness  8529.099           0     
+#Mardia Kurtosis  213.768            0     
+
+# UNIVARIATE NORMALITY:
+
+  
+# histogram of SHSS score 
+m<-mean(data.work$SHSS_row_m)
+std<-sqrt(var(data.work$SHSS_row_m))
+hist(data.work$SHSS_row_m, breaks=20, prob=TRUE, 
+     xlab="SHSS score", 
+     main="SHSS histogram")
+curve(dnorm(x, mean=m, sd=std), 
+      col="darkblue", lwd=2, add=TRUE, yaxt="n")
+
+# shapiro-wilk supports the non-normality of the SHSS total score as indicated by histogram:
+shapiro.test(data.work$SHSS_row_m)
+
+rm(m, std)
+```
+
+```{r Homoscedasticity_and_other_assumptions}
+# fake regression 
+random=rchisq(nrow(data.work), 7) # generate random data
+fake_regres=lm(random~., data=data.work[, c("SHSS_1_S","SHSS_2_S", "SHSS_3_S", "SHSS_4_S","SHSS_5_S","SHSS_6_S","SHSS_7_S", "SHSS_8_S","SHSS_9_S","SHSS_10_S", "SHSS_1_E","SHSS_2_E","SHSS_3_E","SHSS_4_E","SHSS_5_E","SHSS_6_E","SHSS_7_E", "SHSS_8_E","SHSS_9_E","SHSS_10_E")]) # run fake regression
+standardized_rez=rstudent(fake_regres) # calculates standardized residuals
+fitted_val=scale(fake_regres$fitted.values) # creates fitted values 
+
+# linearity
+qqnorm(standardized_rez, mfrow=c(0,0))
+abline(0,1)
+
+# homogenity and homoscedasticity check
+plot(fitted_val, standardized_rez)
+abline(v=0)
+abline(h=0)
+abline(v=-3)
+abline(v=3)
+abline(h=2)
+abline(h=-2)
+
+rm(fake_regres,fitted_val,standardized_rez,random)
+# visual inspection did not indicated large heteroscedasticity of the data - most of the data were spread out so that they did not formed pattern 
+# visual inspection also did not indicated non-homogeneity, as the most of the values are located close to 0 and only small number of data are located below -2 and +2 on the horizontal and behind +3 and - 3 on vertical
+```
+  
+  From our sample (*n* = 1946), participants who were responding in the uniform way we deleted (*n* = 27). Mardia's test and inspection of histograms indicted that multivariate normality of SHSS items can be rejected: standardized multivariate skewness coefficient = 8529.099, p < .001; standardized multivariate kurtosis coefficient = 213.768, p < .001. Furthermore, visual inspection of the histograms indicated signs of ceiling effect in two items: SHSS_7_E and SHSS_9_E. Furthermore, Visual inspection of the scatter plot of homoscedasticity suggested that homoscedasticity assumption in our SHSS data is not violated. Due to the violation of normality assumption, our results will be accompanied by non-parametric tests and if the results will not differ in statistical significance, the parametric results will be reported.
+```{r bartlett test of sphrericity; polychor.cor.matrix}
+# POLYCHORIC CORELATION MATRIX
+SHSS_items=data.work[, c("SHSS_1_S","SHSS_2_S", "SHSS_3_S", "SHSS_4_S","SHSS_5_S","SHSS_6_S","SHSS_7_S", "SHSS_8_S","SHSS_9_S","SHSS_10_S", "SHSS_1_E","SHSS_2_E","SHSS_3_E","SHSS_4_E","SHSS_5_E","SHSS_6_E","SHSS_7_E", "SHSS_8_E","SHSS_9_E","SHSS_10_E")] # select SHSS items 
+# as the polychoric correlation matrix was not possible to calculate from "psych" package (because our scale have more than 8 response categories), we calculated our polychoric correlation matrix from package: "lavaan". 
+SHSS.poly.mat <- lavCor(SHSS_items, ordered = T) # creates polychoric correlation matrix
+
+# BARTLETS TEST OF SPHERICITY:
+
+cor.bart=cortest.bartlett(SHSS.poly.mat, diag = T, n=nrow(SHSS_items)) #  Bartlett's test of sphericity 
+
+# KMO
+KMO=KMO(SHSS.poly.mat)
+```
+Results of the Bartlett’s test of sphericity ($\chi^{2}$ (`r cor.bart$df`) = 22421.93, p < .001) as well as KMO (`r round(KMO$MSA, digits = 3)`) indicates that our data are factorable. 
+```{r random split of tha data}
+# 0.5 indicates proportion accoring to which data should be devided 
+participants <- data_partition(SHSS_items, training_proportion = 0.5) 
+EFA.data <- participants$training
+CFA.data <- participants$test
+str(EFA.data)
+str(CFA.data)
+rm(participants)
+```
+## Factor extraction
+#### First extraction 
+```{r EFA poly.mat. calculation}
+SHSS.poly.mat.EFA <- lavCor(EFA.data, ordered = T) # creates polychoric correlation matrix
+```
+
+```{r Parallel anal_1}
+
+SHSS.parallel=fa.parallel(x = SHSS.poly.mat.EFA, n.obs = nrow(EFA.data), cor = "poly",
+                         fm="wls",fa="fa",main="Figure 1: Parallel Analysis Scree Plot", n.iter=100,
+                         error.bars=FALSE,se.bars=TRUE,sim=TRUE,SMC=FALSE,ylabel="Eigen values",show.legend=TRUE,
+                         quant=.95,plot=TRUE)
+
+# Parallel analysis suggest: 4 factors to retain 
+# Scree plot test strongly suggest: 2 factors
+```
+
+```{r Hull method_1, include=FALSE}
+
+hullEFA(X = EFA.data, extr = "ULS", index_hull = "CAF", maxQ = 4, display = TRUE, graph = TRUE) # "maxQ" indicates number of factors. By default, It is indicated by parallel analysis, conducted by "EFA.MRFA" package. However to assure methodological congruence, we determinated number of factor by parallel analysis in "psych" package and subsequently wrote into "maxQ" function. 
+         # documentation: https://cran.r-project.org/web/packages/EFA.MRFA/EFA.MRFA.pdf
+
+#  The hull plot suggest to retain: 2 factors
+
+```
+
+```{r comparisson data method_1}
+EFACompData(data = EFA.data,f.max=20, n.pop = 10000, n.samples = 100, alpha = .30, graph = TRUE,
+            corr.type = "spearman") # f.max was as according to number of items
+
+# CD method suggests to retain: 2 factors 
+```
+In the first analysis, we extracted 4 factors by the PA,2 factors by Hull method and and two factors by CD method. In the EFA, we tested number of factors extracted by previously mentioned methods along with one factor solution resulting from theory. 
+```{r EFA 1.1}
+# EFA(1.1) 4 factors
+SHSS.EFA.1.1=fa(r = SHSS.poly.mat.EFA, nfactors=4, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.1.1, cut = .38, sort = TRUE)
+```
+
+```{r EFA 1.2}
+# EFA(1.2) 2 factors
+SHSS.EFA.1.2=fa(r = SHSS.poly.mat.EFA, nfactors=2, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.1.2, cut = .38, sort = TRUE)
+```
+
+```{r EFA 1.3}
+# EFA(1.3) 1 factor
+SHSS.EFA.1.3=fa(r = SHSS.poly.mat.EFA, nfactors=1, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.1.3, cut = .38, sort = TRUE)
+```
+ In the first EFA, it was indicated that the item SHSS_8_S yielded across the solutions the low communalities (0.26 - 0.30) and formed its own factor. For this reason, the SHSS_8_S was excluded and EFA was re-run.    
+```{r exclusion of the  SHSS_8_S from data and recalculation of the EFA poly.cox. matrix, include=FALSE}
+
+# exclusion of the item: "SHSS_8_S" from the: SHSS_items data
+SHSS_items=subset(SHSS_items, select = -c(SHSS_8_S))
+ncol(SHSS_items)
+# # exclusion of the item: "SHSS_8_S" from the: EFA.data
+EFA.data=subset(EFA.data, select = -c(SHSS_8_S))
+ncol(EFA.data)
+# # exclusion of the item: "SHSS_8_S" from the: CFA data
+CFA.data=subset(CFA.data, select = -c(SHSS_8_S))
+ncol(CFA.data)
+# recalculation of polychoric cor. matrix without the item: "SHSS_8_S"
+SHSS.poly.mat.EFA <- lavCor(EFA.data, ordered = T) # creates polychoric correlation matrix
+```
+
+#### Second extraction 
+```{r Parallel anal_2}
+SHSS.parallel=fa.parallel(x = SHSS.poly.mat.EFA, n.obs = nrow(EFA.data), cor = "poly",
+                         fm="wls",fa="fa",main="Figure 1: Parallel Analysis Scree Plot", n.iter=100,
+                         error.bars=FALSE,se.bars=TRUE,sim=TRUE,SMC=FALSE,ylabel="Eigen values",show.legend=TRUE,
+                         quant=.95,plot=TRUE)
+
+# Parallel analysis suggest: 4 factors to retain 
+# Scree plot test strongly suggest: 2 factors
+```
+
+```{r Hull method_2, include=FALSE}
+
+hullEFA(X = EFA.data, extr = "ULS", index_hull = "CAF", maxQ = 4, display = TRUE, graph = TRUE)
+# "maxQ" indicates number of factors. By default, It is indicated by parallel analysis, conducted by "EFA.MRFA" package. However to assure methodological congruence, we determinated number of factor by parallel analysis in "psych" package and subsequently wrote into "maxQ" function. 
+# documentation: https://cran.r-project.org/web/packages/EFA.MRFA/EFA.MRFA.pdf
+
+#  The hull plot suggest to retain: 2 factors
+
+```
+
+```{r comparisson data method_2}
+EFACompData(data = EFA.data,f.max=19, n.pop = 10000, n.samples = 100, alpha = .30, graph = TRUE,
+            corr.type = "spearman") # f.max was as according to number of items
+
+# CD method suggests to retain: 5 factors
+```
+In the second analysis, there was extracted 4, 2 and 5 factors respectively. 
+```{r EFA 2.1}
+# EFA(2.1) 5 factors
+SHSS.EFA.2.1=fa(r = SHSS.poly.mat.EFA, nfactors=5, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.2.1, cut = .38, sort = TRUE)
+```
+<!-- EFA 2.1 is interesting because of the existence of factor from SHSS_1_E and SHSS_2_E, which seems to assess hypersensitivity to emotions --> 
+```{r EFA 2.2}
+# EFA(2.2) 4 factors
+SHSS.EFA.2.2=fa(r = SHSS.poly.mat.EFA, nfactors=4, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.2.2, cut = .38, sort = TRUE)
+```
+<!-- EFA 2.2 is also interesting because of the existence of factor from SHSS_1_E and SHSS_2_E, which seems to assess hypersensitivity to emotions -->        
+```{r EFA 2.3}
+# EFA(2.3) 2 factors
+SHSS.EFA.2.3=fa(r = SHSS.poly.mat.EFA, nfactors=2, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.2.3, cut = .38, sort = TRUE)
+```
+
+```{r EFA 2.4}
+# EFA(2.4) 1 factors
+SHSS.EFA.2.4=fa(r = SHSS.poly.mat.EFA, nfactors=1, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.2.4, cut = .38, sort = TRUE)
+```
+The item SHSS_7_E yielded across the solutions suboptimal $h^2$ (`r SHSS.EFA.2.4$communality %>% range () %>% round(digits = 2)`) and was therefore excluded from the further analysis.  
+```{r exclusion of the  SHSS_7_E from data and recalculation of the EFA poly.cox. matrix, include=FALSE}
+
+# exclusion of the item: "SHSS_7_E" from the: SHSS_items data
+SHSS_items=subset(SHSS_items, select = -c(SHSS_7_E))
+ncol(SHSS_items)
+# # exclusion of the item: "SHSS_7_E" from the: EFA.data
+EFA.data=subset(EFA.data, select = -c(SHSS_7_E))
+ncol(EFA.data)
+# # exclusion of the item: "SHSS_7_E" from the: CFA data
+CFA.data=subset(CFA.data, select = -c(SHSS_7_E))
+ncol(CFA.data)
+# recalculation of polychoric cor. matrix without the item: "SHSS_7_E"
+SHSS.poly.mat.EFA <- lavCor(EFA.data, ordered = T) # creates polychoric correlation matrix
+```
+
+#### Third extraction 
+
+```{r Parallel anal_3}
+SHSS.parallel=fa.parallel(x = SHSS.poly.mat.EFA, n.obs = nrow(EFA.data), cor = "poly",
+                         fm="wls",fa="fa",main="Figure 1: Parallel Analysis Scree Plot", n.iter=100,
+                         error.bars=FALSE,se.bars=TRUE,sim=TRUE,SMC=FALSE,ylabel="Eigen values",show.legend=TRUE,
+                         quant=.95,plot=TRUE)
+
+# Parallel analysis suggest: 3 factors to retain 
+# Scree plot test strongly suggest: 2 factors
+```
+
+```{r Hull method_3, include=FALSE}
+
+hullEFA(X = EFA.data, extr = "ULS", index_hull = "CAF", maxQ = 3, display = TRUE, graph = TRUE)
+# "maxQ" indicates number of factors. By default, It is indicated by parallel analysis, conducted by "EFA.MRFA" package. However to assure methodological congruence, we determinated number of factor by parallel analysis in "psych" package and subsequently wrote into "maxQ" function. 
+# documentation: https://cran.r-project.org/web/packages/EFA.MRFA/EFA.MRFA.pdf
+
+#  The hull plot suggest to retain: 2 factors
+
+```
+
+```{r comparisson data method_3}
+EFACompData(data = EFA.data,f.max=18, n.pop = 10000, n.samples = 100, alpha = .30, graph = TRUE,
+            corr.type = "spearman") # f.max was as according to number of items
+
+# CD method suggests to retain: 5 factors
+```
+In the third EFA, there were extracted 3, 2 and 7 factors. 
+```{r EFA 3.1}
+# EFA(3.1) 7 factors
+SHSS.EFA.3.1=fa(r = SHSS.poly.mat.EFA, nfactors=7, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.3.1, cut = .38, sort = TRUE)
+```
+
+```{r EFA 3.2}
+# EFA(3.2) 3 factors
+SHSS.EFA.3.2=fa(r = SHSS.poly.mat.EFA, nfactors=3, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.3.2, cut = .38, sort = TRUE)
+```
+
+```{r EFA 3.3}
+# EFA(3.3) 2 factors
+SHSS.EFA.3.3=fa(r = SHSS.poly.mat.EFA, nfactors=2, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.3.3, cut = .38, sort = TRUE)
+```
+
+```{r EFA 3.4}
+# EFA(3.4) 1 factors
+SHSS.EFA.3.4=fa(r = SHSS.poly.mat.EFA, nfactors=1, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.3.4, cut = .38, sort = TRUE)
+```
+Item SHSS_6_E had in most of the solutions insufficient $h^2$ (around 0.35) or formed its own factor. Therefore, we excluded this item from next analysis.     
+```{r exclusion of the  SHSS_6_E from data and recalculation of the EFA poly.cox. matrix, include=FALSE}
+
+# exclusion of the item: "SHSS_6_E" from the: SHSS_items data
+SHSS_items=subset(SHSS_items, select = -c(SHSS_6_E))
+ncol(SHSS_items)
+# # exclusion of the item: "SHSS_6_E" from the: EFA.data
+EFA.data=subset(EFA.data, select = -c(SHSS_6_E))
+ncol(EFA.data)
+# # exclusion of the item: "SHSS_6_E" from the: CFA data
+CFA.data=subset(CFA.data, select = -c(SHSS_6_E))
+ncol(CFA.data)
+# recalculation of polychoric cor. matrix without the item: "SHSS_6_E"
+SHSS.poly.mat.EFA <- lavCor(EFA.data, ordered = T) # creates polychoric correlation matrix
+```
+
+#### Forth extraction 
+```{r Parallel anal_4}
+SHSS.parallel=fa.parallel(x = SHSS.poly.mat.EFA, n.obs = nrow(EFA.data), cor = "poly",
+                         fm="wls",fa="fa",main="Figure 1: Parallel Analysis Scree Plot", n.iter=100,
+                         error.bars=FALSE,se.bars=TRUE,sim=TRUE,SMC=FALSE,ylabel="Eigen values",show.legend=TRUE,
+                         quant=.95,plot=TRUE)
+
+# Parallel analysis suggest: 3 factors to retain 
+# Scree plot test strongly suggest: 2 factors
+```
+
+```{r Hull method_4, include=FALSE}
+
+hullEFA(X = EFA.data, extr = "ULS", index_hull = "CAF", maxQ = 3, display = TRUE, graph = TRUE)
+# "maxQ" indicates number of factors. By default, It is indicated by parallel analysis, conducted by "EFA.MRFA" package. However to assure methodological congruence, we determinated number of factor by parallel analysis in "psych" package and subsequently wrote into "maxQ" function. 
+# documentation: https://cran.r-project.org/web/packages/EFA.MRFA/EFA.MRFA.pdf
+
+#  The hull plot suggest to retain: 2 factors
+```
+
+```{r comparisson data method_4}
+EFACompData(data = EFA.data,f.max=17, n.pop = 10000, n.samples = 100, alpha = .30, graph = TRUE,
+            corr.type = "spearman") # f.max was as according to number of items
+
+# CD method suggests to retain: 6 factors
+```
+In the third EFA, there were extracted 3, 2 and 6 factors. 
+
+```{r EFA 4.1}
+# EFA(4.1) 6 factors
+SHSS.EFA.4.1=fa(r = SHSS.poly.mat.EFA, nfactors=6, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.4.1, cut = .38, sort = TRUE)
+```
+
+```{r EFA 4.2}
+# EFA(4.2) 3 factors
+SHSS.EFA.4.2=fa(r = SHSS.poly.mat.EFA, nfactors=3, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.4.2, cut = .38, sort = TRUE)
+```
+<!-- Importantly, suggested three factor solution did not contain problematic items in terms of factor loadings, communalities etc. Also percentage of explained variance was relatively high. However, for this factor solution, we did not find strong theoretical support. For this reason, we favourised more parsimonious solution.--> 
+```{r EFA 4.3}
+# EFA(4.3) 2 factors
+SHSS.EFA.4.3=fa(r = SHSS.poly.mat.EFA, nfactors=2, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.4.3, cut = .38, sort = TRUE)
+```
+
+```{r EFA 4.4}
+# EFA(4.4) 1 factors
+SHSS.EFA.4.4=fa(r = SHSS.poly.mat.EFA, nfactors=1, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.4.4, cut = .38, sort = TRUE)
+```
+In the EFA 4, we fount that SHSS_6_S, yielded relatively suboptimal communalities and was thus excluded from analysis.
+
+```{r exclusion of the  SHSS_6_S from data and recalculation of the EFA poly.cox. matrix, include=FALSE}
+
+# exclusion of the item: "SHSS_6_S" from the: SHSS_items data
+SHSS_items=subset(SHSS_items, select = -c(SHSS_6_S))
+ncol(SHSS_items)
+# # exclusion of the item: "SHSS_6_S" from the: EFA.data
+EFA.data=subset(EFA.data, select = -c(SHSS_6_S))
+ncol(EFA.data)
+# # exclusion of the item: "SHSS_6_S" from the: CFA data
+CFA.data=subset(CFA.data, select = -c(SHSS_6_S))
+ncol(CFA.data)
+# recalculation of polychoric cor. matrix without the item: "SHSS_6_S"
+SHSS.poly.mat.EFA <- lavCor(EFA.data, ordered = T) # creates polychoric correlation matrix
+```
+
+#### Fifth extraction 
+```{r Parallel anal_5}
+SHSS.parallel=fa.parallel(x = SHSS.poly.mat.EFA, n.obs = nrow(EFA.data), cor = "poly",
+                         fm="wls",fa="fa",main="Figure 1: Parallel Analysis Scree Plot", n.iter=100,
+                         error.bars=FALSE,se.bars=TRUE,sim=TRUE,SMC=FALSE,ylabel="Eigen values",show.legend=TRUE,
+                         quant=.95,plot=TRUE)
+
+# Parallel analysis suggest: 2 factors to retain 
+# Scree plot test strongly suggest: 2 factors
+```
+
+```{r Hull method_5, include=FALSE}
+
+hullEFA(X = EFA.data, extr = "ULS", index_hull = "CAF", maxQ = 3, display = TRUE, graph = TRUE)
+# "maxQ" indicates number of factors. By default, It is indicated by parallel analysis, conducted by "EFA.MRFA" package. However to assure methodological congruence, we determinated number of factor by parallel analysis in "psych" package and subsequently wrote into "maxQ" function. 
+# documentation: https://cran.r-project.org/web/packages/EFA.MRFA/EFA.MRFA.pdf
+
+#  The hull plot suggest to retain: 2 factors
+
+```
+
+```{r comparisson data method_5}
+EFACompData(data = EFA.data,f.max=16, n.pop = 10000, n.samples = 100, alpha = .30, graph = TRUE,
+            corr.type = "spearman") # f.max was as according to number of items
+
+# CD method suggests to retain: 7 factors
+```
+In the third EFA, all methods except the CD suggested two factor structure.
+
+```{r EFA 5.1}
+# EFA(5.1) 7 factors
+SHSS.EFA.5.1=fa(r = SHSS.poly.mat.EFA, nfactors=7, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.5.1, cut = .38, sort = TRUE)
+```
+
+```{r EFA 5.2}
+# EFA(5.2) 2 factors
+SHSS.EFA.5.2=fa(r = SHSS.poly.mat.EFA, nfactors=2, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.5.2, cut = .38, sort = TRUE)
+```
+
+```{r EFA 5.3}
+# EFA(5.3) 1 factors
+SHSS.EFA.5.3=fa(r = SHSS.poly.mat.EFA, nfactors=1, fm = "wls",rotate = "oblimin") 
+print.psych(SHSS.EFA.5.3, cut = .38, sort = TRUE)
+```
+Although items SHSS_7_S and SHSS_10_S did not reached $h^2$ > 0.40, it was decided to keep these items in the scale as the scale content validity would be weaken if these items would be excluded. The two correlated factors version of the SHSS was theoretically meaningful with overall adequate factor loadings and communalities. This solution explained 54% of the variance. Correlation between factors was *r* = `r round(SHSS.EFA.5.2$score.cor[2,1], digits = c(2))`.
+## Confirmatory Factor analysis (CFA)
+```{r CFA 1.1 One factor model}
+# One factor model 
+one.fac.mod="HS =~ SHSS_1_S + SHSS_2_S + SHSS_3_S + SHSS_4_S + SHSS_5_S + SHSS_7_S + SHSS_9_S + SHSS_10_S + SHSS_1_E + SHSS_2_E + SHSS_3_E + SHSS_4_E + SHSS_5_E + SHSS_8_E + SHSS_9_E + SHSS_10_E"
+
+# CFA
+#when "ordered" is set to "TRUE", than DWLS estimator is automatically used as "standard" in results. "Robust" chisquare in results is referring to WLSMV estimator.
+one.fac.mod.fit=cfa(model = one.fac.mod, data = CFA.data, ordered = T, std.lv=T)
+
+one.fac.mod.sum=summary(one.fac.mod.fit,rsquare=T, standardized=T, fit.measures=T)
+parameterestimates(one.fac.mod.fit, standardized = T) # whill show standardized estimates and many other things 
+modificationindices(one.fac.mod.fit, sort. = T) # how can we improve our model
+fitmeasures(one.fac.mod.fit) # chisq.scaled - robust one 
+# exporting fit indexes
+mod.fit.indicies=as.table(fitMeasures(one.fac.mod.fit)[c('chisq', 'df', 'pvalue',
+                                                              'cfi',"tli",'rmsea',"rmsea.ci.lower",
+                                                              "rmsea.ci.upper", 'srmr')]) 
+
+semPaths(one.fac.mod.fit,layout = "tree2", whatLabels= "std",
+         residuals = T, thresholds = F,      
+         reorder = T, edge.label.cex= 1.1, fade=F, 
+         intercepts = F, rotation = 2, 
+         nCharNodes = 0,style = "OpenMx", label.cex = 1.5,
+         sizeLat = 15, sizeMan=7,edge.color="black")
+
+#////////////////////////////////////////////////////////////////////////////
+```
+
+```{r CFA 1.2 Two correlated factors}
+# Two correlated factors
+two.fac.mod="SS =~ SHSS_1_S + SHSS_2_S + SHSS_3_S + SHSS_4_S + SHSS_5_S + SHSS_7_S + SHSS_9_S + SHSS_10_S
+             ES =~ SHSS_1_E + SHSS_2_E + SHSS_3_E + SHSS_4_E + SHSS_5_E + SHSS_8_E + SHSS_9_E + SHSS_10_E"
+
+# CFA
+#when "ordered" is set to "TRUE", than DWLS estimator is automatically used as "standard" in results. "Robust" chisquare in results is referring to WLSMV estimator.
+two.fac.mod.fit=cfa(model = two.fac.mod, data = CFA.data, ordered = T, std.lv=T)
+
+two.fac.mod.sum=summary(two.fac.mod.fit,rsquare=T, standardized=T, fit.measures=T)
+parameterestimates(two.fac.mod.fit, standardized = T) # whill show standardized estimates and many other things 
+modificationindices(two.fac.mod.fit, sort. = T) # how can we improve our model
+fitmeasures(two.fac.mod.fit) # chisq.scaled - robust one 
+# exporting fit indexes 
+mod.fit.indicies= mod.fit.indicies %>%
+  cbind(fitMeasures(two.fac.mod.fit)[c("chisq", "df", 'pvalue',
+                                        'cfi',"tli",'rmsea',"rmsea.ci.lower", 
+                                        "rmsea.ci.upper", 'srmr')]) %>% round(digits = 3) 
+ 
+library(semPlot) # produce model plot 
+semPaths(two.fac.mod.fit,layout = "tree2", whatLabels= "std",
+         residuals = T, thresholds = F,      
+         reorder = T, edge.label.cex= 1.1, fade=F, 
+         intercepts = F, rotation = 2, 
+         nCharNodes = 0,style = "OpenMx",
+         sizeLat = 15, sizeMan=7,edge.color="black")
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+```
+
+```{r CFA 1.3 hierarchical model}
+# testing hierarchical model
+
+# defining model
+hierar.fac.mod= "
+SS =~ SHSS_1_S + SHSS_2_S + SHSS_3_S + SHSS_4_S + SHSS_5_S + SHSS_7_S + SHSS_9_S + SHSS_10_S
+ES =~ SHSS_1_E + SHSS_2_E + SHSS_3_E + SHSS_4_E + SHSS_5_E + SHSS_8_E + SHSS_9_E + SHSS_10_E
+General =~ 1* SS + ES"
+
+# CFA
+hierar.fac.mod.fit=cfa(model = hierar.fac.mod,
+                     data = CFA.data, ordered = T, std.lv=T) #when "ordered" is set to "TRUE", than DWLS estimator is automatically used as "standard" in results. "Robust" chisquare in results is referring to WLSMV estimator.
+
+summary(hierar.fac.mod.fit,rsquare=T, standardized=T, fit.measures=T)
+parameterestimates(hierar.fac.mod.fit, standardized = T) # whill show standardized estimates and many other things 
+modificationindices(hierar.fac.mod.fit, sort. = T) # how can we improve our model
+fitmeasures(hierar.fac.mod.fit) # chisq.scaled - robust one 
+# this command will combine data from previous models, BUT ONLY NON-ROBUST RESULTS !  
+
+mod.fit.indicies= mod.fit.indicies %>%
+  cbind(fitMeasures(hierar.fac.mod.fit)[c("chisq", "df", 'pvalue',
+                                        'cfi',"tli",'rmsea',"rmsea.ci.lower", 
+                                        "rmsea.ci.upper", 'srmr')]) %>% round(digits = 3) 
+
+
+semPaths(hierar.fac.mod.fit,layout = "tree2", whatLabels= "std",
+         residuals = T, thresholds = FALSE,        
+         reorder = TRUE, edge.label.cex= 1.1, fade=F, 
+         intercepts = F, rotation = 1,  
+         nCharNodes = 0, style = "OpenMx",
+         sizeLat = 20, sizeMan=7,edge.color="black")
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+```
+
+```{r, CFA 1.4 bi-factor model, echo=FALSE, fig.width=8, fig.height=6}
+# ranaming varible to create name of the items consistent with the new name of the scale i.e. SPSQ
+library(stringr)
+CFA.data = CFA.data %>% 
+  rename_all(~str_replace(., "SHSS_", "SPSQ_")) %>% 
+  rename_all(~(str_replace_all(., "_E", "_O"))) 
+  
+  CFA.data.plot = CFA.data %>% 
+  select(SPSQ_1_S, SPSQ_2_S, SPSQ_3_S, SPSQ_4_S, SPSQ_5_S, SPSQ_7_S, 
+           SPSQ_9_S, SPSQ_10_S,SPSQ_1_O,SPSQ_2_O, SPSQ_3_O, SPSQ_4_O,
+           SPSQ_5_O, SPSQ_8_O, SPSQ_9_O, SPSQ_10_O) %>% 
+    rename(SPSQ_6_S = SPSQ_7_S,
+           SPSQ_7_S = SPSQ_9_S,
+           SPSQ_8_S = SPSQ_10_S,
+           SPSQ_6_O = SPSQ_8_O,
+           SPSQ_7_O = SPSQ_9_O,
+           SPSQ_8_O = SPSQ_10_O)
+
+# CFA (7) -  testing bi-factor model suggested by EFA
+bi.fac.mod= "SS =~ SPSQ_1_S + SPSQ_2_S + SPSQ_3_S + SPSQ_4_S + SPSQ_5_S + SPSQ_6_S + SPSQ_7_S + SPSQ_8_S
+             OS =~ SPSQ_1_O + SPSQ_2_O + SPSQ_3_O + SPSQ_4_O + SPSQ_5_O + SPSQ_6_O + SPSQ_7_O + SPSQ_8_O
+             GS =~ SPSQ_1_S + SPSQ_2_S + SPSQ_3_S + SPSQ_4_S + SPSQ_5_S + SPSQ_6_S + SPSQ_7_S + SPSQ_8_S + SPSQ_1_O + SPSQ_2_O + SPSQ_3_O + SPSQ_4_O + SPSQ_5_O + SPSQ_6_O + SPSQ_7_O + SPSQ_8_O "
+
+#when "ordered" is set to "TRUE", than DWLS estimator is automatically used as "standard" in results. "Robust" chisquare in results is referring to WLSMV estimator.
+# it is need to off correlation between latens; this is done by setting "orthogonal=T"
+
+bi.fac.mod.fit=cfa(model = bi.fac.mod, data = CFA.data.plot, orthogonal=T, std.lv=T, ordered = T) 
+
+summary(bi.fac.mod.fit,rsquare=T, standardized=T, fit.measures=T)
+parameterestimates(bi.fac.mod.fit, standardized = T) # whill show standardized estimates and many other things 
+modificationindices(bi.fac.mod.fit, sort. = T) # how can we improve our model
+fitmeasures(bi.fac.mod.fit) # chisq.scaled - robust one 
+# this command will combine data from previous models, BUT ONLY NON-ROBUST RESULTS !  
+
+mod.fit.indicies= mod.fit.indicies %>%
+  cbind(fitMeasures(bi.fac.mod.fit)[c("chisq", "df", 'pvalue',
+                                             'cfi',"tli",'rmsea',"rmsea.ci.lower", 
+                                             "rmsea.ci.upper", 'srmr')]) %>% round(digits = 3)
+
+
+
+semPaths(bi.fac.mod.fit, 
+         whatLabels="std", 
+         layout="tree2",
+         mar = c(1.1, 1, 1, 1),
+         bifactor = "GS", 
+         rotation = 3, 
+         residuals = F, 
+         thresholds = F,
+         intercepts = F,
+         sizeMan=6,
+         sizeLat = 6,
+         asize = 3,
+         edge.label.position = 0.6,
+         edge.label.cex= 0.7,
+         label.cex = 1.6,
+         edge.color="black")
+
+
+# semPaths(bi.fac.mod.fit,
+#          layout = "tree2", whatLabels= "std",
+#          residuals = F, thresholds = FALSE,
+#          reorder = TRUE, edge.label.cex= 1.2, fade=F,
+#          intercepts = F, rotation = 4,
+#          nCharNodes = 0, style = "OpenMx",
+#          sizeLat = 10, sizeMan=10,edge.color="black",
+#          bifactor = "Ge")
+
+```
+
+```{r CFA 1.5 three factor solution EFA, eval=FALSE, include=FALSE}
+
+three.fac.mod= "ES =~ SHSS_1_E + SHSS_4_E + SHSS_3_E + SHSS_2_E + SHSS_9_E + SHSS_10_E + SHSS_8_E + SHSS_5_E  
+                SS1 =~ SHSS_1_S + SHSS_2_S + SHSS_3_S + SHSS_4_S + SHSS_5_S
+                SS2 =~ SHSS_6_S + SHSS_7_S + SHSS_9_S + SHSS_10_S" 
+
+#when "ordered" is set to "TRUE", than DWLS estimator is automatically used as "standard" in results. "Robust" chisquare in results is referring to WLSMV estimator.
+
+three.fac.mod.fit=cfa(model = three.fac.mod, data = CFA.data, std.lv=T, ordered = T) 
+
+summary(three.fac.mod.fit,rsquare=T, standardized=T, fit.measures=T)
+parameterestimates(three.fac.mod.fit, standardized = T) # whill show standardized estimates and many other things 
+modificationindices(three.fac.mod.fit, sort. = T) # how can we improve our model
+fitmeasures(three.fac.mod.fit) # chisq.scaled - robust one 
+# this command will combine data from previous models, BUT ONLY NON-ROBUST RESULTS !  
+
+mod.fit.indicies= mod.fit.indicies %>%
+  cbind(fitMeasures(three.fac.mod.fit)[c("chisq", "df", 'pvalue',
+                                             'cfi',"tli",'rmsea',"rmsea.ci.lower", 
+                                             "rmsea.ci.upper", 'srmr')]) %>% round(digits = 3)
+
+
+semPaths(three.fac.mod.fit, 
+         whatLabels="std", 
+         layout="tree2",
+         mar = c(1.1, 1, 1, 1),
+         bifactor = "Ge", 
+         rotation = 3, 
+         residuals = F, 
+         thresholds = F,
+         intercepts = F,
+         sizeMan=5,
+         sizeLat = 7,
+         asize = 3,
+         edge.label.cex= 1.0,
+         label.cex = 1.7,
+         edge.color="black")
+
+# semPaths(bi.fac.mod.fit,
+#          layout = "tree2", whatLabels= "std",
+#          residuals = F, thresholds = FALSE,
+#          reorder = TRUE, edge.label.cex= 1.2, fade=F,
+#          intercepts = F, rotation = 4,
+#          nCharNodes = 0, style = "OpenMx",
+#          sizeLat = 10, sizeMan=10,edge.color="black",
+#          bifactor = "Ge")
+
+```
+
+```{r chi-squared difference test of nested models}
+# one factor model
+chisq.di.t.one.fac.mod=lavTestLRT(one.fac.mod.fit, bi.fac.mod.fit, method = "satorra.bentler.2001") 
+# two factor model
+chisq.di.t.two.fac.mod=lavTestLRT(two.fac.mod.fit, bi.fac.mod.fit, method = "satorra.bentler.2001") 
+
+```
+  In the CFA, the we tested four solutions: 1) one factor model, 2) solution with two correlated factors (Sensory sensitivity (SS), Emotional sensitivity (ES)) suggested by the EFA, 3) hierarchical factor model and 4) bi-factor model.<!-- In the first model, items yielded adequate factor loadings (`r inspect(one.fac.mod.fit,what="std")$lambda[0:8] %>% range() %>% round(digits = 2)`) and $R^2$ (`r inspect(one.fac.mod.fit,what="r2") %>% range() %>% round(digits = 2)`).--> In the first model, absolute and relative fit indexes suggested that the one factor model does not explain the data adequately (see Tablex). The Second two factor model, yielded higher goodness of fit indexes compared to the first model (Table x).<!-- In the second model, factor loadings were higher (inspect(two.fac.mod.fit,what="std")$lambda %>% as.table %>% na_if(0) %>% as.table() %>% range (finite=T) %>%  round (digits = 3)) --> Moreover, there was strong correlation between the factors *r* = `r inspect(two.fac.mod.fit, "cor.lv")[2] %>% round(digits = 3)`. Due to this strong relationship between these two dimensions and based on the theory, we tested hierarchical model with the *General sensitivity* (GS) as the first order factor and with SS and ES as the second order factors. Results of this third tested model can be found in Table 3. In order to further explore the relationship between GS and subscales, we tested an influence of the both subscales on the manifest variables when the effect of the GS was taken into account. This factor model yielded from satisfactory to excellent fit indexes (see Table x) and from medium to high factor loadings in GS factor (`r inspect(bi.fac.mod.fit,what="std")$lambda[,c("GS")] %>% na_if(0) %>% range (finite=T) %>% round (digits = 2)`). Manifest variables $R^2$ (`r inspect(bi.fac.mod.fit,what="r2") %>% range() %>% round(digits = 2)`) yielded acceptable values. Chi-square difference test with Satorra-Bentler correction further supported the superiority of the bi-factor model over the one factor model ($\chi^2$(`r chisq.di.t.one.fac.mod$"Df diff"[2]`) = `r chisq.di.t.one.fac.mod$"Chisq diff"[2] %>% round(digits = 2)`; `r chisq.di.t.one.fac.mod$"Pr(>Chisq)" [2] %>% format_p ` and two factor model ($\chi^2$(`r chisq.di.t.two.fac.mod$"Df diff"[2]`) = `r chisq.di.t.two.fac.mod$"Chisq diff"[2] %>% round(digits = 2)`;`r chisq.di.t.one.fac.mod$"Pr(>Chisq)"[2] %>% format_p`. Medium factor loadings of number of the SS items (`r inspect(bi.fac.mod.fit,what="std")$lambda[,c("SS")] %>% na_if(0) %>% range (finite=T) %>% round (digits = 2)`) seems to support domain specific character of the sensory sensitivity construct. Due to the dimensionality of the SHSS, the summary score will be used for further analysis.      
+```{r Model fit Table}
+mod.fit.indicies %>% as.data.frame() %>% 
+  select(one_factor_model=1, Two_factor_model=2, Hierarchical_model=3, bi_factor_model=4) %>% 
+knitr::kable(digits = 3, format="markdown", booktabs=TRUE, caption="Table 1")
+```  
+#### RELIABILITY 
+```{r Subscales reliability}
+# Subscales reliability
+
+S.subs.items=SHSS_items[, c("SHSS_1_S", "SHSS_2_S", "SHSS_3_S", "SHSS_4_S", "SHSS_5_S", 
+"SHSS_7_S", "SHSS_9_S", "SHSS_10_S")] 
+s.subs.reliab=scaleReliability(dat = S.subs.items, digits = 2, ci = T, samples = 5000, poly = TRUE)
+
+SHSS.reliab=scaleReliability(dat = SHSS_items, digits = 2, ci = T, samples = 5000, poly = TRUE)
+# *********************************************************************************
+```
+##### Item-total cor + scoring
+```{r Item-total}
+# SHSS.score
+SHSS.keys.fin <- make.keys(nvars = SHSS_items, 
+                          list(SHSS_items=c("SHSS_1_S", "SHSS_2_S", "SHSS_3_S", "SHSS_4_S", "SHSS_5_S",
+                                            "SHSS_7_S", "SHSS_9_S", "SHSS_10_S", "SHSS_1_E", "SHSS_2_E",
+                                            "SHSS_3_E", "SHSS_4_E", "SHSS_5_E", "SHSS_8_E", "SHSS_9_E", "SHSS_10_E")))
+item.stat.shss <-  scoreItems (SHSS.keys.fin, SHSS_items, totals = F, missing = T)
+data.work$SHSS=item.stat.shss$scores # add TEQ score into dataset
+print(item.stat.shss, short = F)
+``` 
+
+Reliability of the SS subscale was good: $\alpha$ = `r round(s.subs.reliab$output$cronbach.alpha,digits=2)` [`r round( s.subs.reliab$output$alpha.ci,digits=2)`]; $\omega_t$ = `r round(s.subs.reliab$output$omega, digits=2 )`[`r round(s.subs.reliab$output$omega.ci, digits = 2)`]. Whole scale reliability as also good:$\alpha$ = `r round(SHSS.reliab$output$cronbach.alpha,digits=2)` [`r round( SHSS.reliab$output$alpha.ci,digits=2)`]; $\omega_t$ = `r round(SHSS.reliab$output$omega, digits=2 )` [`r round(SHSS.reliab$output$omega.ci, digits = 2)`]; $\omega_h$ = `r SHSS.reliab$intermediate$omega.psych[["omega_h"]] %>% round(digits = 2)`.<!-- "The difference is mainly that omega_t gives an reliability estimate of the overall variance in the data that is due to a general factor and also specific factors. The omega_h is a reliability estimate for the variance that is due to the general factor only."--> Item - total correlation was adequate (`r item.stat.shss$item.corrected %>% round(digits = 2) %>% range()` see Table 2). 
+#### inter -item correlation + descriptive table
+```{r Inter-item correlation extraction}
+item.stat.final=psych::alpha(SHSS_items)
+item.stat.final$alpha.drop$average_r
+```
+
+```{r Table 2 with SHSS descriptives}
+# descriptives 
+  psych::describe(SHSS_items) %>% as.data.frame() %>% select(mean,sd,skew,kurtosis) %>% 
+  cbind(item.stat.shss$item.corrected) %>%
+  cbind(item.stat.final$alpha.drop$average_r) %>% 
+  select(M=mean, SD=sd, Skew=skew, Kurtosis=kurtosis, ITC=SHSS_items, IIC="item.stat.final$alpha.drop$average_r") %>%
+  round(digits = 2) %>% 
+  knitr::kable(format="markdown", booktabs=TRUE, caption="Table x")
+```
+#### Recoding variables and loading of the extended dataset 
+
+```{r}
+# hezká tabulka: model_parameters(anc.out.4)
+```
+
+```{r loading data from actual dataset}
+# this dataset is result of combining the same data but in a different RMarkdown script
+
+data.work.actual = read.csv2("SHSS.study.actual.data.csv") %>% 
+  as_tibble() 
+
+data.work.actual = data.work.actual %>% 
+  mutate(across(starts_with(c("HSP","TEQ","DSES","SHSS","BFI","HSPS","age")), as.numeric)) %>%   # NAs here are ok 
+  mutate_at(dplyr::vars(dplyr::contains("cov_topics1_")), ~as.factor(dplyr::recode(., 
+                                             "-1"="Worsten",
+                                              "0"="Not worsten",
+                                              "1"="Not worsten"))) %>% 
+  mutate_at(vars(dplyr::contains("cov_topics2_")), ~as.factor(dplyr::recode(.,
+                                                         "-1"="Not frequently",
+                                                          "0"="Not frequently",
+                                                          "1"="More frequently"))) %>%                
+  mutate(education = recode_factor(education,
+                                   "Basic school or unfinished or without basic school"="Elementary school",
+                                   "Basic schoool"= "Elementary school",
+                                   "Vocational school or non - maturity high school"="Vocational school or non - maturity high school",
+                                   "High school"="High school",
+                                   "Higher vocational school"="Higher vocational school or University bachelor",
+                                   "Higher vocational school or University bachelor"="Higher vocational school or University bachelor",
+                                   "University bachelor"="Higher vocational school or University bachelor",
+                                   "University master"="College",
+                                   "University master or higher"="College",
+                                   "University Dr"="College"),
+         economical_status = recode_factor(economical_status,
+                                            "Employed" = "Employed",
+                                            "Entrepreneur" = "Entrepreneur", 
+                                            "Entrepreneur with > 6 employes" = "Entrepreneur", 
+                                            "Entrepreneur with 1 - 5 employes" = "Entrepreneur", 
+                                            "Entrepreneur without employes" = "Entrepreneur", 
+                                            "In household" = "In household/without work",
+                                            "Invalidity pensioner" = "Pensioner",
+                                            "Maternity leave" = "Maternity leave", 
+                                            "Not working pensioner" = "Pensioner", 
+                                            "Pensioner" = "Pensioner", 
+                                            "Student" = "Student",
+                                            "Student without stable work" = "Student",
+                                            "Without work" = "In household/without work"),
+         gender = recode_factor(gender,
+                                "Male"="Male",
+                                "Female"="Female"),
+        family_status = recode_factor(family_status, 
+                                       "Divorced"="No relationship",
+                                       "In relationship"="In relationship",
+                                       "Married"="In relationship",
+                                       "No relationship"="No relationship",
+                                       "Unmarried"="No relationship",
+                                       "Widow" = "No relationship"),
+        faith = recode_factor(faith,
+                              "Yes, I am a member of a church or religious society"="Religious",
+                              "Yes, but I am not a member of a church or religious society"="Religious",
+                              "No"="Non-religious",
+                              "No, I am a convinced atheist"="Non-religious"),
+        religious_attendance = recode_factor(religious_attendance,
+            "I try to attend once a week" = "Once a week or more",
+            "More than once a week" = "Once a week or more",
+            "Never" = "Less than once a week" ,
+            "Occasionaly" = "Less than once a week",
+            "Often, but not every week" = "Less than once a week")) %>%  
+  rename(SHSS_1_S = "senisitivity_1", SHSS_1_E = "emotions_1",
+         SHSS_2_S = "senisitivity_2", SHSS_2_E = "emotions_2",
+         SHSS_3_S = "senisitivity_3", SHSS_3_E = "emotions_3",
+         SHSS_4_S = "senisitivity_4", SHSS_4_E = "emotions_4",
+         SHSS_5_S = "senisitivity_5", SHSS_5_E = "emotions_5",
+         SHSS_6_S = "senisitivity_6", SHSS_6_E = "emotions_6",
+         SHSS_7_S = "senisitivity_7", SHSS_7_E = "emotions_7",
+         SHSS_8_S = "senisitivity_8", SHSS_8_E = "emotions_8",
+         SHSS_9_S = "senisitivity_9", SHSS_9_E = "emotions_9",
+         SHSS_10_S = "senisitivity_10", SHSS_10_E = "emotions_10",
+         Gender = gender,
+         Age = age) %>% 
+                         expss::apply_labels(
+                          cov_topics1_1 = "Můj vztah s partnerem/partnerkou",
+                          cov_topics1_2 = "Můj vztah s dětmi",
+                          cov_topics1_3 = "Můj vztah s ostatními osobami v domácnosti",
+                          cov_topics1_4 = "Pocit samoty", 
+                          cov_topics1_5 = "Pocit ohrožení",
+                          cov_topics1_6 = "Pocit strachu a úzkosti",
+                          cov_topics1_7 = "Pocit bezmoci",
+                          cov_topics1_8 = "Naděje", 
+                          cov_topics1_9 = "Struktura dne")  
+
+#........................selection of only those respondents, who were present in the older dataset (data.work)...........................
+
+# cleaning code: delete of unusefull spaces in code
+data.work.to.extr.orig = data.work %>% 
+  mutate(code =  as.character(code)) %>%
+  mutate(code = trimws(x = code, which = c("right"))) 
+
+# adding "c_" just to make code comparable with code from data frame: data.work
+data.work.to.extr.import = data.work.actual %>% 
+  mutate(code = paste0("c_", code)) 
+
+# removing one participant with duplicated code (there is also another duplicated code, which is ok, because it is present in old data)
+data.work.to.extr.import = data.work.to.extr.import %>% 
+  filter(!X == "68") # these two codes are duplicated: "c_257f5786c829fb334c63ad6681eb187e" "c_5876a2755361e70d2d3335fc6b912554"
+
+# selection of codes from data.work.actual, which are already present in the data.work dataset 
+extracted.code=unique(data.work.to.extr.orig$code, data.work.to.extr.import$code) # the command "intersect" does not filter duplicated values/characters
+
+# creating dataset with added data from National Panel but from the same participants (from data.work)
+data.work.fin = data.work.to.extr.import %>% 
+  filter(code %in% c(extracted.code))
+
+data.work.actual = data.work.fin
+```
+
+#### Convergent validity 
+##### Scoring
+###### DSES
+```{r DSES avarage score}
+DSES.names.dataset=data.work.actual[,c("DSES_1", "DSES_2", "DSES_3", "DSES_4", "DSES_5",
+                                "DSES_6", "DSES_7", "DSES_8", "DSES_9", "DSES_10",
+                                "DSES_11", "DSES_12", "DSES_13", "DSES_14", "DSES_15")]
+#str(DSES.names.dataset)
+
+DSES.keys <- make.keys(nvars = DSES.names.dataset,  
+                          list(DSES.names.dataset=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)))
+item.stat.fin <-  scoreItems (DSES.keys, DSES.names.dataset, totals = F, missing = T)
+item.stat.fin$scores[item.stat.fin$missing > 0] <- NA
+data.work.actual$DSES=item.stat.fin$scores
+#print(item.stat.fin, short = F)
+```
+###### HSPS
+```{r HSPS sore}
+HSPS.names.dataset=data.work.actual[,c("HSPS_1", "HSPS_2", "HSPS_3", "HSPS_4", "HSPS_5",
+                                "HSPS_6", "HSPS_7", "HSPS_8", "HSPS_9", "HSPS_10", 
+                                "HSPS_11", "HSPS_12", "HSPS_13", "HSPS_14", "HSPS_15",
+                                "HSPS_16", "HSPS_17","HSPS_18", "HSPS_19", "HSPS_20",
+                                "HSPS_21", "HSPS_22", "HSPS_23", "HSPS_24", "HSPS_25",
+                                "HSPS_26", "HSPS_27")]
+#str(HSPS.names.dataset)
+
+HSPS.keys <- make.keys(nvars = HSPS.names.dataset,  
+                          list(HSPS.names.dataset=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27)))
+item.stat.fin <-  scoreItems (HSPS.keys, HSPS.names.dataset, totals = F, missing = T)
+item.stat.fin$scores[item.stat.fin$missing > 0] <- NA
+data.work.actual$HSPS=item.stat.fin$scores
+#print(item.stat.fin, short = F)
+```
+###### BFI-N
+```{r BFI_N scoring}
+
+BFI.N.data=data.work.actual[,c("BFI_N_1", "BFI_N_2", "BFI_N_3",
+                      "BFI_N_4", "BFI_N_5", "BFI_N_6", "BFI_N_7", "BFI_N_8")]
+BFI.N.keys <- make.keys(nvars = BFI.N.data,  
+                          list(BFI.N.data=c(1,2,3,4,5,6,7,8)))
+
+
+item.stat.fin <-  scoreItems (BFI.N.keys, BFI.N.data, totals = F, missing = T)
+item.stat.fin$scores[item.stat.fin$missing > 0] <- NA
+data.work.actual$BFI.N=item.stat.fin$scores
+#print(item.stat.fin, short = F)
+```
+###### SHSS - in the extended dataset
+```{r SHSS_scoreing}
+#.....................................................................................................................
+# SHSS.score from data.work.actual - TOTAL SCORE
+#.....................................................................................................................
+SHSS_items = data.work.actual %>% 
+  select_at(dplyr::vars("SHSS_1_S","SHSS_2_S", "SHSS_3_S", "SHSS_4_S", "SHSS_5_S",
+                        "SHSS_7_S", "SHSS_9_S", "SHSS_10_S", "SHSS_1_E", "SHSS_2_E",
+                       "SHSS_3_E", "SHSS_4_E", "SHSS_5_E", "SHSS_8_E", "SHSS_9_E", "SHSS_10_E"))
+
+SHSS.keys.fin <- make.keys(nvars = SHSS_items, 
+                          list(SHSS_items=c("SHSS_1_S", "SHSS_2_S", "SHSS_3_S", "SHSS_4_S", "SHSS_5_S",
+                                            "SHSS_7_S", "SHSS_9_S", "SHSS_10_S", "SHSS_1_E", "SHSS_2_E",
+                                            "SHSS_3_E", "SHSS_4_E", "SHSS_5_E", "SHSS_8_E", "SHSS_9_E", "SHSS_10_E")))
+item.stat.shss <-  scoreItems (SHSS.keys.fin, SHSS_items, totals = F, missing = T)
+data.work.actual$SHSS=item.stat.shss$scores 
+print(item.stat.shss, short = F)
+
+
+#.....................................................................................................................
+# SHSS.score from data.work.actual - SENSORY SENSITIVITY SCORE
+#.....................................................................................................................
+SHSS_items.Sensory = data.work.actual %>% 
+  select_at(dplyr::vars("SHSS_1_S", "SHSS_2_S", "SHSS_3_S", "SHSS_4_S", "SHSS_5_S",
+                        "SHSS_7_S", "SHSS_9_S", "SHSS_10_S"))
+
+SHSS.keys.fin.sensory <- make.keys(nvars = SHSS_items.Sensory, 
+                          list(SHSS_items.Sensory=c("SHSS_1_S", "SHSS_2_S", "SHSS_3_S", "SHSS_4_S", "SHSS_5_S",
+                                                   "SHSS_7_S", "SHSS_9_S", "SHSS_10_S")))
+item.stat.shss.S <-  scoreItems (SHSS.keys.fin.sensory, SHSS_items.Sensory, totals = F, missing = T)
+data.work.actual$SHSS.S=item.stat.shss.S$scores 
+print(item.stat.shss.S, short = F)
+```
+
+#### ANCOVA
+```{r ANCOVA, include=FALSE}
+# Levenes test 
+levene=leveneTest(as.numeric(data.work.actual$SHSS) ~ data.work.actual$Gender, data.work.actual$education)
+levene
+# ANCOVA
+# 
+# Gender 
+#____________________________
+anc.out.1=lm(SHSS ~ Gender, data = data.work.actual) # "+" means controlling for 
+# summary.aov (anc.out.1)
+apa_lm.1 <- apa_print(anc.out.1)
+# ggplot(data.work, aes(x = Gender, y = SHSS)) + geom_boxplot() 
+
+# Gender + Neuroticism
+#____________________________
+anc.out.2=lm(SHSS ~ Gender + BFI.N, data = data.work.actual) 
+# summary.aov (anc.out.2)
+apa_lm.2 <- apa_print(anc.out.2)
+
+# Gender + Neuroticism + Age
+#____________________________
+anc.out.3=lm(SHSS ~ Gender + BFI.N + Age, data = data.work.actual) 
+#summary.aov (anc.out.3)
+apa_lm.3 <- apa_print(anc.out.3)
+# Gender + Neuroticism + Age + education
+#____________________________
+anc.out.4=lm(SHSS ~ Gender + BFI.N + Age + education, data = data.work.actual) 
+#summary.aov (anc.out.4)
+apa_lm.4 <- apa_print(anc.out.4)
+anc.out.4 %>% summary()
+
+# Gender + Neuroticism + Age + education BUT INSTED SHSS THE HSPS SCORE WAS USED
+#____________________________
+anc.out.5=lm(HSPS ~ Gender + BFI.N + Age + education, data = data.work.actual) 
+#summary.aov (anc.out.5)
+apa_lm.5 <- apa_print(anc.out.5)
+anc.out.5 %>% summary()
+
+# ANCOVA table - if needed
+#____________________________
+#apa_table(apa_lm.4$table, caption = "Varibles in the ANCOVA model")
+
+
+# effect size
+#____________
+eta.anc.4=effectsize::eta_squared(model = anc.out.4, partial = T, ci.lvl = 0.95)
+eta.anc.5=effectsize::eta_squared(model = anc.out.5, partial = T, ci.lvl = 0.95)
+
+
+# To confirm results from "parametric" ancova, the robust version in the WRS2 package can be used see:
+# https://cran.r-project.org/web/packages/WRS2/WRS2.pdf
+```
+
+```{r ggplot regression, include=FALSE}
+ggplotRegression <- function (fit) {
+require(ggplot2)
+ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
+                     "Intercept =",signif(fit$coef[[1]],5 ),
+                     " Slope =",signif(fit$coef[[2]], 5),
+                     " P =",signif(summary(fit)$coef[2,4], 5)))}
+```
+
+```{r correlations and assumptions, include=FALSE}
+# hist(data.work$DSES)
+# shapiro.test(data.work$DSES)
+# 
+# hist(data.work$HSPS)
+# shapiro.test(data.work$HSPS)
+
+# SHSS and DSES
+cor.t.2.p=cor.test(data.work.actual$SHSS, data.work.actual$DSES, method = "pearson", exact = F)
+cor.t.2.s=cor.test(data.work.actual$SHSS, data.work.actual$DSES, method = "spearman", exact = F) 
+
+# SHSS and HSPS
+cor.t.3.p=cor.test(data.work.actual$SHSS, data.work.actual$HSPS, method = "pearson", exact = F) 
+cor.t.3.s=cor.test(data.work.actual$SHSS, data.work.actual$HSPS, method = "spearman", exact = F)
+# plot
+ggplotRegression(lm(data.work.actual$SHSS ~ data.work.actual$HSPS, data = data.work.actual))
+# results from different methods differed in the coeficient values but not significance; thus method indicating stronger relationship was used 
+```
+
+```{r preparation to logistic regression, include=FALSE}
+# this is need to add into the recode chunk after scoring !
+#...........................................................
+data.work.actual = data.work.actual %>% 
+  mutate(across(starts_with("SHSS_",), as.numeric)) %>% 
+  mutate_at(dplyr::vars("DSES","BFI.N","HSPS","SHSS","Age","SHSS.S"), as.numeric)
+#...........................................................
+data.for.logreg = data.work.actual
+
+# standardization of the numeric columns:
+  col.names <- data.work.actual %>% 
+    select_at(dplyr::vars(c("DSES","BFI.N","HSPS","SHSS","Age","SHSS.S"))) %>% 
+    names
+
+ # This is desirable to uncheck if there is need to select all numeric variables execpt some 
+ # col.names <- data.work.actual %>% 
+ #    select_if(is.numeric) %>% 
+ #    select(!starts_with(c("TEQ","age","X"))) %>% 
+ #    names 
+
+  
+# creating duplicites of names  
+data.for.logreg = bind_cols(data.for.logreg, setNames(data.for.logreg[col.names], paste0("std_", col.names)))
+ 
+# scaling selected variables and making them numeric s
+data.for.logreg <- data.for.logreg %>% 
+	mutate(across(starts_with("std_"), scale),
+	       across(starts_with("std_"), as.numeric)) %>% 
+  mutate(cov_relat = case_when(
+	       cov_topics1_1 == "Worsten" ~ "wors",
+	       cov_topics1_2 == "Worsten" ~ "wors",
+	       cov_topics1_3 == "Worsten" ~ "wors", 
+	       TRUE ~ "Not worsten")) 
+data.for.logreg$cov_relat=as.factor(data.for.logreg$cov_relat)
+```
+
+```{r associations with COVID-19, include=FALSE}
+# library(jtools)
+# library(questionr)
+#library(rcompanion)
+
+library(questionr)
+# Furthre indicators related to log. regression - not currently used
+#......................................................................
+# nagelkerke(logreg.mod1) # model fit
+# export_summs(logreg.mod1) 
+# (exp(lr_cov_t_1_1$coefficients[-1])-1)*100 # percentages
+# plot_summs(logreg.mod1)
+# aod::wald.test(b = coef(logreg.mod1), Sigma = vcov(logreg.mod1), Terms = 1:6)
+#......................................................................
+
+# we adjusted criterial p-value for multiple comparison testing in the following way: 
+# 0.05/36 = 0.0013 
+# thus 0.0013 was set as criterial p-value 
+
+# regression models
+
+# 1.a model SHSS (Deteriorated relationship with partner)
+# Crude effect
+glm(cov_topics1_1  ~ std_SHSS, data = data.for.logreg, family=binomial(logit))  %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+# adjusted effect 
+lr_cov_t_1_1=glm(cov_topics1_1  ~ std_SHSS + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit))
+lr_cov_t_1_1 %>% odds.ratio(level = 0.95)  %>% round(digits = 2)
+(exp(lr_cov_t_1_1$coefficients[-1])-1)*100 # percentage
+# 1.b model SHSS (Deteriorated relationship with partner)
+# Crude effect
+glm(cov_topics1_1  ~ std_SHSS.S, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+lr.s_cov_t_1_1=glm(cov_topics1_1  ~ std_SHSS.S + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) 
+lr.s_cov_t_1_1 %>% odds.ratio(level = 0.95)  %>% round(digits = 2)
+(exp(lr.s_cov_t_1_1$coefficients[-1])-1)*100 # percentage
+#...........................................................................................................................................................................
+# 2.a model SHSS (Deteriorated relationship with children)
+# Crude effect
+glm(cov_topics1_2  ~ std_SHSS, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_2  ~ std_SHSS + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+# 2.b model SHSS (Deteriorated relationship with children)
+# Crude effect
+glm(cov_topics1_2  ~ std_SHSS.S, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_2  ~ std_SHSS.S + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+#...........................................................................................................................................................................
+# 3.a model SHSS (Deteriorated relationship with Other persons in the household)
+# Crude effect
+glm(cov_topics1_3  ~ std_SHSS, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_3  ~ std_SHSS + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+# 3.b model SHSS (Deteriorated relationship with Other persons in the household)
+# Crude effect
+glm(cov_topics1_3  ~ std_SHSS.S, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_3  ~ std_SHSS.S + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+#...........................................................................................................................................................................
+# 4.a model SHSS (Loneliness)
+# Crude effect
+glm(cov_topics1_4  ~ std_SHSS, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_4  ~ std_SHSS + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+# 3.b model SHSS (Loneliness)
+# Crude effect
+glm(cov_topics1_4  ~ std_SHSS.S, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_4  ~ std_SHSS.S + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+#...........................................................................................................................................................................
+# 5.a model SHSS (Threat)
+# Crude effect
+glm(cov_topics1_5  ~ std_SHSS, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_5  ~ std_SHSS + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+# 3.b model SHSS (Threat)
+# Crude effect
+glm(cov_topics1_5  ~ std_SHSS.S, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_5  ~ std_SHSS.S + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+#...........................................................................................................................................................................
+# 6.a model SHSS (Fear and anxiety)
+# Crude effect
+glm(cov_topics1_6  ~ std_SHSS, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+lr_cov_t_1_6 =glm(cov_topics1_6  ~ std_SHSS + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit))
+lr_cov_t_1_6 %>% odds.ratio(level = 0.95)  %>% round(digits = 2)
+(exp(lr_cov_t_1_6$coefficients[-1])-1)*100 # percentage
+# 3.b model SHSS (Fear and anxiety)
+# Crude effect
+glm(cov_topics1_6  ~ std_SHSS.S, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_6  ~ std_SHSS.S + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+#...........................................................................................................................................................................
+# 7.a model SHSS (Helplessness)
+# Crude effect
+glm(cov_topics1_7  ~ std_SHSS, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_7  ~ std_SHSS + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+# 3.b model SHSS (Helplessness)
+# Crude effect
+glm(cov_topics1_7  ~ std_SHSS.S, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_7  ~ std_SHSS.S + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+#...........................................................................................................................................................................
+# 8.a model SHSS (Hope)
+# Crude effect
+glm(cov_topics1_8  ~ std_SHSS, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_8  ~ std_SHSS + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+# 3.b model SHSS (Hope)
+# Crude effect
+glm(cov_topics1_8  ~ std_SHSS.S, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_8  ~ std_SHSS.S + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+#...........................................................................................................................................................................
+# 9.a model SHSS (Deteriorated structure of a day)
+# Crude effect
+glm(cov_topics1_9  ~ std_SHSS, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_9  ~ std_SHSS + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+# 3.b model SHSS (Deteriorated structure of a day)
+# Crude effect
+glm(cov_topics1_9  ~ std_SHSS.S, data = data.for.logreg, family=binomial(logit)) %>%  odds.ratio(level = 0.95)  %>% round(digits = 2)
+# adjusted effect 
+glm(cov_topics1_9  ~ std_SHSS.S + economical_status + Gender + Age, data = data.for.logreg, family=binomial(logit)) %>% odds.ratio(level = 0.95) %>% round(digits = 2)
+
+### testovací odpad
+
+#######################################################xx
+pokus = lm(SHSS ~ cov_topics1_9 + cov_topics1_8 + cov_topics1_7 + cov_topics1_6 + cov_topics1_5 +
+           cov_topics1_4 + cov_topics1_3 + cov_topics1_2 + cov_topics1_1, data = data.for.logreg) 
+pokus %>% summary
+
+mlm1 <- lm(cbind(cov_topics1_9, cov_topics1_8, cov_topics1_7,
+                 cov_topics1_5,cov_topics1_4,cov_topics1_3,cov_topics1_2,cov_topics1_1, cov_topics1_6) ~ std_SHSS.S + economical_status + Gender + Age , data = data.for.logreg)
+mlm1 %>% summary
+
+```
+
+In order to verify our H4, analysis of the covariance (ANCOVA) was performed. Levenes test indicated that homogenity of the variances is not broken $\chi^2$ (`r levene$Df`) = `r levene$"F value"[1] %>% round(digits = 2)`; `r levene$"Pr(>F)"[1] %>% format_p`. Results of the firt model indicated that gender had significant effect on SHSS score `r apa_lm.1$statistic$modelfit$r2`. In the next step, we added and controlled for neuroticism, Age and education. AAfter this step, the effect of the gender on the SHSS score remain significant `r apa_lm.4$full_result$GenderFemale`; with small effect size $\eta_p^2$ = `r round(eta.anc.4$Eta2_partial[[1]],digits = 2)`, 95%CI [`r eta.anc.4$CI_low[1]`, `r eta.anc.4$CI_high[1]`]. 
+With the same controlling variables, the significant effect was also found for the HSPS scale `r apa_lm.5$full_result$GenderFemale`, $\eta_p^2$ = `r eta.anc.5$Eta2_partial[1] %>% round(digits = 2)`, 95%CI [`r eta.anc.5$CI_low[1] %>% round(digits = 2)`, `r eta.anc.5$CI_high[1]`].  
+The H4 - H6 were evaluated by correlations. As the normality assumption was violated, the Spearmans rank correlation was used. Results indicated positive medium relationship between SHSS score and spirituality and SHSS `r cor_apa(cor.t.2.s, format = "rmarkdown", print = F)` and HSPS and SHSS `r cor_apa(cor.t.3.s, format = "rmarkdown", print = F)`.           
+# Socio-demographic results
+  Sample of this study (Age: *M* = `r mean(data.work$Age, na.rm = T) %>% round(digits = 3)`, *SD* = `r sd(data.work$Age, na.rm = T) %>% round(digits = 3)`) was composed mainly from females *n* = `r n_perc0(data.work$Gender=="Female", na_rm = T, show_symbol = T, digits = 2)`. Further socio-demografic results can be found in the Supplementary table 1. 
+## Economical_status
+## Creating tables with socio-demographic differenes 
+## Table with n,%,and absolute n in each group 
+```{r Table with n, %,and absolute n in each group, include=FALSE, include=FALSE}
+soc.dec.=data.work.actual[, c("Gender","family_status", "religious_attendance", "economical_status", "education", "faith")]
+
+library(compareGroups)
+resNoGroups <- compareGroups(~ ., data = soc.dec.)
+restabNoGroups <- createTable(resNoGroups)
+restabNoGroups
+print(restabNoGroups, header.labels = c("all" = "Entire cohort"), which.table = "descr")
+export2xls(x = restabNoGroups, header.labels = T, file = "restabNoGroups.xlsx") # excel table 
+```
+### Table with differences in SHSS in each group
+```{r Group differences in shss, include=FALSE}
+library(finalfit)
+# data preparation
+explan.names=names(data.work.actual[, c("Gender","family_status", "religious_attendance", "economical_status", "education", "faith")])
+explanatory = explan.names
+dependent = "SHSS"
+# descriptives with basic group differences
+group.dif.empa=summary_factorlist(.data = data.work.actual ,dependent, explanatory, na_include = F, p=TRUE) # command which we add in our analysis: "p_cat = "aov"" must be off during knit function  
+write.csv(group.dif.empa, "Supplementary table prep.csv")
+```
+
+### Quartiles to Supplementary table 1
+```{r Quartiles of socio-demographi groups in shss, include=FALSE}
+#Quartiles of SHSS score to copy to excel
+quartiles.1=as.data.frame(do.call("rbind", tapply(data.work.actual$SHSS, data.work.actual[, c("Gender")], quantile, na.rm =T)))  
+quartiles.2=as.data.frame(do.call("rbind", tapply(data.work.actual$SHSS, data.work.actual[, c("family_status")], quantile, na.rm =T)))  
+quartiles.3=as.data.frame(do.call("rbind", tapply(data.work.actual$SHSS, data.work.actual[, c("religious_attendance")], quantile, na.rm =T)))
+quartiles.5=as.data.frame(do.call("rbind", tapply(data.work.actual$SHSS, data.work.actual[, c("economical_status")], quantile, na.rm =T)))  
+quartiles.4=as.data.frame(do.call("rbind", tapply(data.work.actual$SHSS, data.work.actual[, c("education")], quantile, na.rm =T)))  
+quartiles.6=as.data.frame(do.call("rbind", tapply(data.work.actual$SHSS, data.work.actual[, c("faith")], quantile, na.rm =T)))  
+quart.total=rbind(quartiles.1,quartiles.2,quartiles.3,quartiles.4,quartiles.5,quartiles.6, na.rm =T)
+quart.total=quart.total[, -c(1,3,5)]
+quart.total # just to check
+rownames(quart.total) <- c()
+quart=quart.total %>% round(digits = 2)# for copy to excel
+quart=quart[-c(22),]
+quart.export=cbind(group.dif.empa,quart)
+write.csv2(file = "quart.export.csv", x = quart.export)
+#........................................................................
+```
+### Group differences to Supplementary table 1
+#### Education and Faith
+```{r include=FALSE}
+# Family status group comparison 
+
+# anova to confirm group differences suggested by compareGroups package:
+aov(data.work.actual$SHSS ~ data.work.actual$economical_status + data.work.actual$education + data.work.actual$faith + data.work.actual$family_status +  data.work.actual$religious_attendance) %>% summary
+# There were furthre evaluated only differences, which were significant in this firtst anova 
+
+# normality not assumed
+leveneTest(as.numeric(data.work.actual$SHSS) ~ data.work.actual$religious_attendance, data = data.work.actual, center = mean)
+# equal variances not assumed thus: Games–Howell pairwise comparison test
+
+library(userfriendlyscience)
+post.h=posthocTGH(y = data.work.actual$SHSS, data.work.actual$education,  method = "games-howell", p.adjust = "bonferroni", digits = 4) 
+post.h %>% print
+# dunn.test 
+dunn.test(as.numeric(data.work.actual$SHSS), data.work.actual$Gender, list = T, altp = T, method = "bonferroni", kw=T, label = T, table = T)
+
+# effect size
+library(rcompanion)
+multiVDA(x = as.numeric(data.work.actual$SHSS),
+         g = data.work.actual$Gender, statistic = "VDA", digits = 3) 
+
+
+library(ggplot2)
+ggplot(data.work.actual, aes(y=SHSS, x=family_status, fill=family_status)) + geom_boxplot() +  theme_bw()
+
+ggbetweenstats(x = family_status, y = SHSS, ylab = "SHSS raw score", messages = T, data = data.work.actual, pairwise.comparisons = TRUE, pairwise.annotation = "p.value", p.adjust.method = "bonferroni", effsize.type = "unbiased") 
+
+library(ggplot2)
+ggplot(data.work.actual, aes(x = family_status, y = SHSS, group = family_status)) +
+   stat_summary(fun.y = mean, na.rm = T, geom="point", color="blue") +
+   stat_summary(fun.data = mean_cl_normal, geom = "errorbar",
+                fun.args = list(conf.int=.95), size = 0.6, width = 0.5) +
+        theme_bw()
+#mean_se
+```
+
+```{r include=FALSE, soc_den_dif, include=FALSE}
+#  confirm group differences suggested by compareGroups package:
+# ROBUST ANOVA
+#_______________________________________________________________________________________
+# From some reason, the following command did not worked, thus 3x two way was conducted
+# t3way(SHSS ~ Gender + faith + education,  data = data.work.actual)
+# First
+WRS2::t2way(SHSS ~ Gender + education,  data = data.work.actual)
+# Second
+WRS2::t2way(SHSS ~ faith + education,  data = data.work.actual)
+# third 
+WRS2::t2way(SHSS ~ faith + family_status,  data = data.work.actual)
+#_____________________________________________________________________________________
+
+# Non - parametric TESTING
+krus.gen=kruskal.test(SHSS ~ Gender, data = data.work.actual)
+krus.gen 
+krus.faith=kruskal.test(SHSS ~ Gender, data = data.work.actual)
+krus.faith
+# it was confirmed that variables: Faith and Gender did have an effect on the SHSS score
+
+# POST-HOC COMPARISOM 
+#________________________________________________________________________________________
+
+# ASSUMPTIONS
+#__________________________________________________
+shapiro.test(data.work.actual$SHSS)
+# normality not assumed
+leveneTest(as.numeric(data.work.actual$SHSS) ~ data.work.actual$faith, data = data.work.actual, center = median)
+# equal variances ASSUMED --> Games–Howell pairwise comparison test NO NEEDED; thus Dunn test was performed
+
+# POST-HOC TESTING
+#_______________________________________________________________________
+# variable: FAITH
+dun.faith=dunn.test(data.work.actual$SHSS, data.work.actual$faith, list = T, altp = T, method = "bonferroni", kw=T, label = T, table = T)
+
+# variable: EDUCATION
+krus.edu=kruskal.test(SHSS ~ education, data = data.work.actual)
+dun.edu=posthocTGH(y = data.work.actual$SHSS, data.work.actual$education,  method = "games-howell", p.adjust = "bonferroni", digits = 4) 
+# in the dun.test, there is need to add values into the test by colum number e.g. [1]; there is no other way
+
+# effect size
+#____________________________________
+# Faith
+#______________________________________________
+library(rcompanion)
+VDA.faith=multiVDA(x = as.numeric(data.work.actual$SHSS),
+         g = data.work.actual$faith, statistic = "VDA", digits = 3) %>% 
+  as.data.frame() %>% 
+  mutate(VDA = as.numeric(pairs.VDA))
+# Non-religious VS Yes, but I am not a member of church/rel.society
+ VDA.faith.nr.vs.rel.nch = VDA.faith %>% 
+  filter(pairs.Comparison == "Non-religious - Yes, but I am not a member of church/rel.society") %>% 
+   select(VDA) %>%
+   as.matrix()
+# Yes, I am a member or church/rel.society
+  VDA.faith.nr.vs.rel = VDA.faith %>% 
+  filter(pairs.Comparison == "Non-religious - Yes, I am a member or church/rel.society") %>% 
+   select(VDA) %>%
+   as.matrix()
+#____________________________________
+# Education
+#______________________________________________
+  VDA.edu=multiVDA(x = data.work.actual$SHSS,
+         g = data.work.actual$education, statistic = "VDA", digits = 3) %>% 
+  as.data.frame() %>% 
+  mutate(VDA = as.numeric(pairs.VDA))
+# Higher vocational school or University bachelor-Vocational school or non - maturity high school
+   VDA.edu.voc.vs.bc.or.high.voc = VDA.edu %>% 
+  filter(pairs.Comparison == "Vocational school or non - maturity high school - Higher vocational school or University bachelor") %>% 
+   select(VDA) %>%
+   as.matrix()
+#____________________________________
+# Gender
+#______________________________________________
+ VDA.gen=multiVDA(x = data.work.actual$SHSS,
+         g = data.work.actual$Gender, statistic = "VDA", digits = 3) %>% 
+  as.data.frame() %>% 
+  mutate(VDA = as.numeric(pairs.VDA))
+```
+
+```{r plot faith differenc in SHSS, echo=FALSE, fig.height=6, fig.width=8}
+
+data.work.actual = data.work.actual %>% 
+  mutate(Religious_status = recode_factor(faith, 
+                                          "Non-religious"="Non-religious",
+                                          "Yes, but I am not a member of church/rel.society"="Religious",
+                                          "No, I am convinced atheist"="Non-religious",
+                                          "Yes, I am a member or church/rel.society"="Religious"))
+
+# Grapthics
+#______________________________________________________________________
+
+# First option
+#___________________________
+ggbetweenstats(x = faith, y = SHSS, ylab = "SHSS score", messages = T, data = data.work.actual, pairwise.comparisons = TRUE, pairwise.annotation = "p.value", p.adjust.method = "bonferroni", effsize.type = "unbiased")
+
+ggbetweenstats(x = Religious_status, y = SHSS, ylab = "SHSS score", messages = T, data = data.work.actual, pairwise.comparisons = TRUE, pairwise.annotation = "p.value", p.adjust.method = "bonferroni", effsize.type = "unbiased")
+
+
+wilcox.test(SHSS ~ Religious_status, data = data.work.actual)
+
+wilcox_effsize(SHSS ~ Religious_status, data = data.work.actual,p.adjust.method = "bonferroni")
+
+wilcox_test(SHSS ~ Religious_status, data = data.work.actual)
+
+
+# Second option
+#___________________________
+ # ggplot(data.work.actual, aes(y=SHSS, x=faith, fill=faith)) + geom_boxplot() +  theme_bw()
+
+
+# Third option
+#___________________________
+# ggplot(data.work.actual, aes(x = faith, y = SHSS, group = faith)) +
+#    stat_summary(fun.y = mean, na.rm = T, geom="point", color="blue") +
+#    stat_summary(fun.data = mean_cl_normal, geom = "errorbar",
+#                 fun.args = list(conf.int=.95), size = 0.6, width = 0.5) +
+#         theme_bw()
+#mean_se
+
+
+#Dunn test indicated higher SHSS score compared to employed, however, when alpha levels of this test (p = 0.0179) was compared with adjusted alpha level i.e. 0.05/6 = 0.008 it become non significant. 
+
+#Group differences in Family status and Religious attendance were not significantly lower than seted treshold (0.008).
+```
+The differences between socio-demographic groups were tested by both parametric and non-parametric tests Between socio-demographic groups. The higher SHSS score was found in females $\chi^2$ (`r krus.gen$parameter %>% as.numeric()`) = `r krus.gen$statistic %>% round(digits = 3)`; `r krus.gen$p.value %>% format_p`, with small effect size $\hat{A}$ = `r VDA.gen$VDA[1]`. Dunn test post-hoc test with Bonferroni correction indicated significant difference between non-religious and religious participants (*Z* = `r dun.faith$Z[5] %>% round(digits = 2)`; `r dun.faith$altP.adjusted[5] %>% format_p`; with small Delaney’s A effect size: $\hat{A}$ = `r VDA.faith.nr.vs.rel[1]`) and between non-religious and Religious (no churche) (*Z* = `r dun.faith$Z[3] %>% round(digits = 2)`; *p* = `r dun.faith$altP.adjusted[3] %>% format_p`; with small Delaney’s A effect size: $\hat{A}$ = `r VDA.faith.nr.vs.rel.nch[1]`) see Figure 2. Kruskal-Wallis rank sum test indicated significant difference between education in SHSS score $\chi^2$ (`r krus.edu$parameter %>% as.numeric()`) = `r krus.edu$statistic %>% round(digits = 3)`; `r krus.edu$p.value %>% format_p`. The Games-Howell test indicated people with bachelor/higher vocational school have higher SHSS score compared to people with Vocational school or non - maturity high school t(`r dun.edu$output$games.howell$df[6]`) = `r dun.edu$output$games.howell$t[6]`, `r dun.edu$intermediate$p.gameshowell[6] %>% format_p`, $\hat{A}$ = `r VDA.edu.voc.vs.bc.or.high.voc[1]`. No other significant effects of socio-demographic variables on the SHSS score have been found.  
+
+
+### invariance of the measurement
+  Results of the measurement equivalence indicated that across tested invariance models (configure, metric, scalar and strict) $\Delta$ of the CFI was < 0.01. This findings strongly suggest that the UWES assess working engagement equivalently in males and females (See Table 6).    
+
+```{r gender invariance SPSQ, include=FALSE}
+
+data.work.actual = data.work.actual %>%
+  rename_with( ~str_replace(., "SHSS", "SPSQ")) %>%  
+  rename_with( ~str_replace(., "_E", "_O"))
+
+meas.invar.spsq= "SS =~ SPSQ_1_S + SPSQ_2_S + SPSQ_3_S + SPSQ_4_S + SPSQ_5_S + SPSQ_6_S + SPSQ_7_S + SPSQ_8_S
+             OS =~ SPSQ_1_O + SPSQ_2_O + SPSQ_3_O + SPSQ_4_O + SPSQ_5_O + SPSQ_6_O + SPSQ_7_O + SPSQ_8_O
+             GS =~ SPSQ_1_S + SPSQ_2_S + SPSQ_3_S + SPSQ_4_S + SPSQ_5_S + SPSQ_6_S + SPSQ_7_S + SPSQ_8_S + SPSQ_1_O + SPSQ_2_O + SPSQ_3_O + SPSQ_4_O + SPSQ_5_O + SPSQ_6_O + SPSQ_7_O + SPSQ_8_O"
+
+meas.invar.spsq.cfa=cfa(meas.invar.spsq, data = data.work.actual,ordered = T,std.lv=T,
+                         meanstructure = T) # crucial in invariance testing
+# Tab x 
+tab.fit = matrix(nrow = 7, ncol = 10)
+# ODSIS Part
+
+colnames(tab.fit)=c("Model","x2","df","pvalue","CFI","TLI","rmsea","rmsea.ci.lower", "rmsea.ci.upper", "SRMR")
+tab.fit[1, ] = c("Overall model", round(fitMeasures(meas.invar.spsq.cfa,
+                                                    c('chisq', 'df', 'pvalue',
+                                                   'cfi',"tli",'rmsea',"rmsea.ci.lower",
+                                                   "rmsea.ci.upper", 'srmr')), digits = 3))
+
+data.invar = data.work.actual %>%
+  drop_na(SPSQ)
+
+library(semTools)
+library(equaltestMI)
+
+# there was need to set robust maximum likelihood estimator insted of DWLS estimator as the configurate model did not converged using the latter method (DWLS)
+
+mult.group.m = eqMI.main(model = meas.invar.spsq,
+                         data = data.invar,
+                         group = "Gender", 
+                         meanstructure = T,
+                         output = "both",
+                         equivalence.test = T,
+                         adjRMSEA = T,
+                         projection = T,
+                         estimator = "MLR") 
+
+# male table
+tab.fit[2, ] = c("Male model", round(fitMeasures(mult.group.m$convention.sem$LavaanOut$fit.configural.g1,
+                                                    c('chisq', 'df', 'pvalue',
+                                                   'cfi',"tli",'rmsea',"rmsea.ci.lower",
+                                                   "rmsea.ci.upper", 'srmr')), digits = 3))
+# female table
+tab.fit[3, ] = c("Female model", round(fitMeasures(mult.group.m$convention.sem$LavaanOut$fit.configural.g2,
+                                                    c('chisq', 'df', 'pvalue',
+                                                   'cfi',"tli",'rmsea',"rmsea.ci.lower",
+                                                   "rmsea.ci.upper", 'srmr')), digits = 3))
+
+# Configure invariance 
+tab.fit[4, ] = c("Configural  model", round(fitMeasures(mult.group.m$convention.sem$LavaanOut$fit.combine.groups,
+                                                    c('chisq', 'df', 'pvalue',
+                                                   'cfi',"tli",'rmsea',"rmsea.ci.lower",
+                                                   "rmsea.ci.upper", 'srmr')), digits = 3))
+# Metric invariance 
+tab.fit[5, ] = c("Metric  model", round(fitMeasures(mult.group.m$convention.sem$LavaanOut$fit.metric,
+                                                    c('chisq', 'df', 'pvalue',
+                                                   'cfi',"tli",'rmsea',"rmsea.ci.lower",
+                                                   "rmsea.ci.upper", 'srmr')), digits = 3))
+# Scalar invariance 
+tab.fit[6, ] = c("Scalar  model", round(fitMeasures(mult.group.m$convention.sem$LavaanOut$fit.scalar,
+                                                    c('chisq', 'df', 'pvalue',
+                                                   'cfi',"tli",'rmsea',"rmsea.ci.lower",
+                                                   "rmsea.ci.upper", 'srmr')), digits = 3))
+# Strict (error) invariance
+tab.fit[7, ] = c("Strict  model", round(fitMeasures(mult.group.m$convention.sem$LavaanOut$fit.strict.residuals,
+                                                    c('chisq', 'df', 'pvalue',
+                                                   'cfi',"tli",'rmsea',"rmsea.ci.lower",
+                                                   "rmsea.ci.upper", 'srmr')), digits = 3))
+
+mult.group.m$eqMI.stat # checking chi-square 
+
+tab.fit = tab.fit %>% 
+  as_tibble() %>% 
+  mutate(pvalue = as.numeric(pvalue)) %>% 
+  mutate(pvalue = format_p(pvalue)) %>% 
+  mutate(rmsea = paste0(rmsea," 90% CI (",rmsea.ci.lower,"-",rmsea.ci.upper,")")) %>% 
+  select(!starts_with(c("rmsea.ci.","rmsea.ci.lower","rmsea.ci.upper"))) 
+
+# This function will calculate difference in CFI and report difference if exist
+# cfi.dif = function(x) {
+#   if(!is.data.frame(x)) stop('x must be a data frame')
+#   if(length(x) < 1) stop('must be higher length than 1')
+#   if(!sum(str_detect(names(x),"CFI"))) stop("There must be a column with CFI values")
+#   x = x %>% 
+#     tibble("CFI.dif" = c(NA, round(diff(as.numeric(x$CFI)),digits = 3))) %>% 
+#     relocate("CFI.dif", .after = "CFI") %>% 
+#     mutate("mod.dif" = ifelse(CFI.dif > 0.01, "Yes", "No")) %>% 
+#     rename("CFI difference" = "CFI.dif",
+#            "Model difference" = "mod.dif")
+#   print(x)
+# }
+# 
+# tab.fit %>% 
+#   cfi.dif()
+# 
+```
+
+```{r echo=FALSE}
+# creating table 
+library(huxtable)
+tab.fit %>% 
+  as_tibble() %>% 
+     mutate_all(~(replace(., is.na(.), ""))) %>% 
+  as_huxtable(add_colnames = F) %>% 
+  apa_table(col.names=c("Model","x2","df","p-value","CFI","TLI","RMSEA","SRMR"),
+          caption = "Measurement eqivalence of the spsq between genders", 
+          note = "x2 = chi-square, df = degrees of freedom, CFI = Comparative Fit Index, TLI = Tucker-Lewis index, RMSEA = Root Mean Square Error of Approximation, SRMR = Standardized Root Mean Square Residual, CI = confidence interval")
+
+# rmarkdown::pandoc_convert("pokus.docx", output = "pokus.html")
+# {r child = "pokus.html"}
+```
+
+
+
+# Associoations of the SHSS with life changess associated to Covid-19 pandemic
+
+# Discussion
+
+
+\newpage
+
+# References
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+<div id="refs" custom-style="Bibliography"></div>
+\endgroup
